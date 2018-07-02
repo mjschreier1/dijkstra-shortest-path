@@ -14,7 +14,7 @@ function shortestPath(maze, origin, destination) {
         const coord = decode(p.encoded);
         maze[coord.y][coord.x] = 2;
         if (coord.x === origin.x && coord.y === origin.y) {
-            console.log(`Shortest path found in ${points[encode(destination)].cost} steps`);
+            console.log(`Shortest path found in ${points[encode(destination)].cost} steps - path outlined with 2s`);
             console.log(maze);
         } else {
             writePath(points[p.via]);
@@ -39,7 +39,7 @@ function shortestPath(maze, origin, destination) {
         }
     }
 
-    // Points holds data regarding visited points in the maze
+    // Points is a hashmap that holds data regarding visited points in the maze
     let points = {};
     // Q is a queue of points to evaluate paths from - since every path accrues a cost of 1, a priority queue is not necessary
     let q = new Queue();
@@ -78,7 +78,7 @@ function shortestPath(maze, origin, destination) {
             && !points[encode(downCoord)])
                 unvisitedQ.enqueue(downCoord)
         
-        // Create a point in the points object for each remaining adjacent point
+        // Create a point in the points hashmap for each adjacent point that matched the above criteria
         // Place those points in the q
         while (unvisitedQ.length() > 0) {
             const point = unvisitedQ.dequeue();
@@ -88,7 +88,10 @@ function shortestPath(maze, origin, destination) {
         }
 
         // If the q is empty, return an error that there is no path through the maze
-        if (q.length() === 0) return new Error("No paths exist!");
+        if (q.length() === 0) {
+            console.log("No paths exist!");
+            return;
+        }
     }
 
     // Display the shortest path through the maze using the number 2
@@ -97,16 +100,16 @@ function shortestPath(maze, origin, destination) {
 
 const maze = 
 [
-    [1, 1, 1, 1, 1, 0, 0, 1, 1, 1],
-    [0, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+    [1, 1, 0, 1, 0, 0, 0, 1, 1, 1],
+    [0, 1, 1, 1, 0, 1, 0, 1, 0, 1],
     [0, 0, 1, 0, 1, 1, 1, 0, 0, 1],
-    [1, 0, 1, 1, 1, 0, 1, 1, 0, 1],
-    [0, 0, 0, 1, 0, 0, 0, 1, 0, 1],
-    [1, 0, 1, 1, 1, 0, 0, 1, 1, 0],
-    [0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
-    [0, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-    [1, 1, 1, 1, 1, 0, 0, 1, 1, 1],
-    [0, 0, 1, 0, 0, 1, 1, 0, 0, 1]
+    [1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
+    [1, 0, 0, 1, 1, 0, 0, 1, 0, 1],
+    [1, 1, 1, 1, 0, 0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 1, 1, 1, 1, 1, 0, 1, 0, 0],
+    [1, 1, 1, 0, 0, 0, 0, 1, 1, 1],
+    [0, 0, 1, 1, 1, 1, 1, 1, 1, 1]
 ];
 
 shortestPath(maze, { x: 0, y: 0 }, { x: 9, y: 9 });
