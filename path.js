@@ -5,28 +5,20 @@ function shortestPath(maze, origin, destination) {
         ? { x: 9, y: Math.floor(n / 10) - 1 } 
         : { x: n % 10 - 1, y: Math.floor(n / 10) };
 
-    const getLeftCoord = n => {
-        let left = decode(n);
-        left.x--;
-        return left;
-    }
+    const getLeftCoord = n => ({ x: n.x - 1, y: n.y });
+    const getRightCoord = n => ({ x: n.x + 1, y: n.y });
+    const getUpCoord = n => ({ x: n.x, y: n.y - 1 });
+    const getDownCoord = n => ({ x: n.x, y: n.y + 1 });
 
-    const getRightCoord = n => {
-        let right = decode(n);
-        right.x++;
-        return right;
-    }
-
-    const getUpCoord = n => {
-        let up = decode(n);
-        up.y--;
-        return up;
-    }
-
-    const getDownCoord = n => {
-        let down = decode(n);
-        down.y++;
-        return down;
+    const writePath = p => {
+        const coord = decode(p.encoded);
+        maze[coord.y][coord.x] = 2;
+        if (coord.x === origin.x && coord.y === origin.y) {
+            console.log(`Shortest path found in ${points[encode(destination)].cost} steps`);
+            console.log(maze);
+        } else {
+            writePath(points[p.via]);
+        }
     }
     
     class Queue {
@@ -69,22 +61,22 @@ function shortestPath(maze, origin, destination) {
         // Ignore points that fall outside the maze (i.e. if x = 0, don't check x - 1)
         // Ignore any adjacent points with a value of 0
         // Ignore any adjacent point that has been visited already (which includes the "via" point)
-        if (x > 0 
+        if (pCoord.x > 0 
             && maze[leftCoord.y][leftCoord.x] 
             && !points[encode(leftCoord)]) 
-                unvisitedQ.enqueue(points[encode(leftCoord)]);
-        if (x < maze[0].length - 1 
+                unvisitedQ.enqueue(leftCoord);
+        if (pCoord.x < maze[0].length - 1 
             && maze[rightCoord.y][rightCoord.x] 
             && !points[encode(rightCoord)]) 
-                unvisitedQ.enqueue(points[encode(rightCoord)]);
-        if (y > 0
+                unvisitedQ.enqueue(rightCoord);
+        if (pCoord.y > 0
             && maze[upCoord.y][upCoord.x]
             && !points[encode(upCoord)])
-                unvisitedQ.enqueue(points[encode(upCoord)]);
-        if (y < maze.length - 1
+                unvisitedQ.enqueue(upCoord);
+        if (pCoord.y < maze.length - 1
             && maze[downCoord.y][downCoord.x]
             && !points[encode(downCoord)])
-                unvisitedQ.enqueue(points[encode(downCoord)])
+                unvisitedQ.enqueue(downCoord)
         
         // Create a point in the points object for each remaining adjacent point
         // Place those points in the q
@@ -98,6 +90,9 @@ function shortestPath(maze, origin, destination) {
         // If the q is empty, return an error that there is no path through the maze
         if (q.length() === 0) return new Error("No paths exist!");
     }
+
+    // Display the shortest path through the maze using the number 2
+    writePath(points[encode(destination)]);
 }
 
 const maze = 
@@ -114,4 +109,4 @@ const maze =
     [0, 0, 1, 0, 0, 1, 1, 0, 0, 1]
 ];
 
-console.log(shortestPath(maze, { x: 0, y: 0 }, { x: 9, y: 9 }));
+shortestPath(maze, { x: 0, y: 0 }, { x: 9, y: 9 });
