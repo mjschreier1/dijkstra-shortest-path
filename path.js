@@ -1,9 +1,9 @@
 // Assume that input maze will always be a square
 function shortestPath(maze, origin, destination) {
-    const encode = point => point.y * 10 + point.x + 1;
-    const decode = n => n % 10 === 0 
-        ? { x: 9, y: Math.floor(n / 10) - 1 } 
-        : { x: n % 10 - 1, y: Math.floor(n / 10) };
+    const encode = point => point.y * maze[0].length + point.x + 1;
+    const decode = n => n % maze[0].length === 0 
+        ? { x: 9, y: Math.floor(n / maze[0].length) - 1 } 
+        : { x: n % maze[0].length - 1, y: Math.floor(n / maze[0].length) };
 
     const getLeftCoord = n => ({ x: n.x - 1, y: n.y });
     const getRightCoord = n => ({ x: n.x + 1, y: n.y });
